@@ -5,6 +5,25 @@ def bubble_sort(a, N):
                 a[j], a[j+1] = a[j+1], a[j]
     return a
 
+def counting_sort(ori, temp, k):
+    # 1. 카운팅 리스트를 만들어준다. (k+1만큼)
+    c = [0] * (k+1)
+
+    # 2. 원래 배열을 돌면서, 각 수를 세준다.
+    for i in range(len(ori)):
+        c[ori[i]] += 1
+
+    # 3. 카운트 배열을 누적합으로 바꿔준다
+    for j in range(1, len(c)):
+        c[j] += c[j-1]
+
+    # 4. 원래 배열의 뒤에서부터, 인덱스만큼 count -1 해주고 이를 인덱스로 새로운 배열에 추가해준다.
+    for u in range(len(ori)-1, -1, -1):
+        c[ori[u]] -= 1
+        temp[c[ori[u]]] = ori[u]
+
+    return temp
+
 
 T = int(input())
 for tc in range(1, T+1):

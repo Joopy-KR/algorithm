@@ -13,15 +13,14 @@ def solve(n):
         return f[n]
 
 
-import sys
-from collections import deque
-input = sys.stdin.readline
 
-N = int(input().rstrip())
-M = int(input().rstrip())
+from collections import deque
+
+N = int(input())
+M = int(input())
 fixed = deque()
 for _ in range(M):
-    fixed.append(int(input().rstrip()))
+    fixed.append(int(input()))
 
 # 고정석이 있을 때
 if M:

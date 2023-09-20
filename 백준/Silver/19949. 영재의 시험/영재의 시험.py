@@ -14,12 +14,15 @@ def solve(cnt):
     global bingo
 
     if cnt == 11:
-        temp = 0
-        for j in range(1, 11):
-            if output[j] == answer[j]:
-                temp += 1
-        if temp >= 5:
+        # 5점 이상이라면
+        if bingo >= 5:
             result += 1
+        # temp = 0
+        # for j in range(1, 11):
+        #     if output[j] == answer[j]:
+        #         temp += 1
+        # if temp >= 5:
+        #     result += 1
         return
 
     # 1번부터 5번까지 번호를 골라줄껀데
@@ -29,12 +32,8 @@ def solve(cnt):
             # 배열에 해당 숫자 추가
             output[cnt] = i
             # 지금 고른 숫자가 정답이라면
-            # if output[cnt] == answer[cnt]:
-            #     bingo += 1
-
-            # 5점 이상이라면
-            # if bingo >= 5:
-            #     result += 1
+            if output[cnt] == answer[cnt]:
+                bingo += 1
 
             # 만약 처음 고르는 숫자라면
             if visited[i] == 0:
@@ -51,8 +50,8 @@ def solve(cnt):
 
             cnt -= 1
 
-            # if output[cnt] == answer[cnt]:
-            #     bingo -= 1
+            if output[cnt] == answer[cnt]:
+                bingo -= 1
 
             # 내 이전 두 숫자가 남아있다면
             if cnt >= 3:

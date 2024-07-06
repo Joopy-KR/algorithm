@@ -1,20 +1,24 @@
-import sys
-input = sys.stdin.readline
+def josephus_permutation(N, K):
+    # Initialize the list of people
+    people = list(range(1, N + 1))
+    
+    # This will store the Josephus permutation
+    result = []
+    
+    # Start position for removal
+    index = 0
+    
+    # Continue until all people are removed
+    while people:
+        # Find the index of the next person to remove
+        index = (index + K - 1) % len(people)
+        # Append the person to the result
+        result.append(people.pop(index))
+    
+    # Format the result as required
+    result_str = '<' + ', '.join(map(str, result)) + '>'
+    return result_str
 
+# Example usage:
 N, K = map(int, input().split())
-
-arr = list(range(1, N+1))
-pointer = 0
-result = []
-
-for i in range(N * K):
-    pointer += K - 1
-    if pointer > len(arr) - 1:
-        while pointer > len(arr) - 1:
-            pointer -= len(arr)
-    result.append(arr.pop(pointer))
-    if not arr:
-        break
-
-new_result = ', '.join(map(str, result))
-print(f'<{new_result}>')
+print(josephus_permutation(N, K))

@@ -1,54 +1,68 @@
-import sys
-input = sys.stdin.readline
+class SegmentTree:
+    def __init__(self, data, mod):
+        self.n = len(data)
+        self.mod = mod
+        self.tree = [1] * (2 * self.n)
+        self.build(data)
+        
+    def build(self, data):
+        for i in range(self.n):
+            self.tree[self.n + i] = data[i]
+        for i in range(self.n - 1, 0, -1):
+            self.tree[i] = (self.tree[2 * i] * self.tree[2 * i + 1]) % self.mod
+
+    def update(self, pos, value):
+        pos += self.n
+        self.tree[pos] = value
+        while pos > 1:
+            pos //= 2
+            self.tree[pos] = (self.tree[2 * pos] * self.tree[2 * pos + 1]) % self.mod
+
+    def query(self, left, right):
+        result = 1
+        left += self.n
+        right += self.n + 1
+        while left < right:
+            if left % 2 == 1:
+                result = (result * self.tree[left]) % self.mod
+                left += 1
+            if right % 2 == 1:
+                right -= 1
+                result = (result * self.tree[right]) % self.mod
+            left //= 2
+            right //= 2
+        return result
 
 MOD = 1000000007
 
-class SegmentTree:
-    def __init__(self, arr):
-        self.n = len(arr)
-        self.tree = [1] * (4 * self.n)
-        self.build(arr, 1, 0, self.n - 1)
+# 입력 받기
+import sys
+input = sys.stdin.read
+data = input().split()
 
-    def build(self, arr, node, start, end):
-        if start == end:
-            self.tree[node] = arr[start] % MOD
-        else:
-            mid = (start + end) // 2
-            self.build(arr, node * 2, start, mid)
-            self.build(arr, node * 2 + 1, mid + 1, end)
-            self.tree[node] = (self.tree[node * 2] * self.tree[node * 2 + 1]) % MOD
+N = int(data[0])
+M = int(data[1])
+K = int(data[2])
 
-    def update(self, node, start, end, index, value):
-        if index < start or index > end:
-            return
-        if start == end:
-            self.tree[node] = value % MOD
-        else:
-            mid = (start + end) // 2
-            self.update(node * 2, start, mid, index, value)
-            self.update(node * 2 + 1, mid + 1, end, index, value)
-            self.tree[node] = (self.tree[node * 2] * self.tree[node * 2 + 1]) % MOD
+array = [int(data[i]) for i in range(3, 3 + N)]
+operations = data[3 + N:]
 
-    def query(self, node, start, end, left, right):
-        if left > end or right < start:
-            return 1
-        if left <= start and end <= right:
-            return self.tree[node]
-        mid = (start + end) // 2
-        return (self.query(node * 2, start, mid, left, right) * 
-                self.query(node * 2 + 1, mid + 1, end, left, right)) % MOD
+# 구간 트리 초기화
+seg_tree = SegmentTree(array, MOD)
 
-# 입력 처리
-N, M, K = map(int, input().split())
-arr = [int(input()) for _ in range(N)]
+# 연산 수행
+index = 0
+output = []
+while index < len(operations):
+    a = int(operations[index])
+    b = int(operations[index + 1])
+    c = int(operations[index + 2])
+    if a == 1:
+        seg_tree.update(b - 1, c)
+    elif a == 2:
+        result = seg_tree.query(b - 1, c - 1)
+        output.append(result)
+    index += 3
 
-# 세그먼트 트리 생성
-seg_tree = SegmentTree(arr)
-
-# 쿼리 처리
-for _ in range(M + K):
-    a, b, c = map(int, input().split())
-    if a == 1:  # 업데이트 쿼리
-        seg_tree.update(1, 0, N - 1, b - 1, c)
-    else:  # 곱 쿼리
-        print(seg_tree.query(1, 0, N - 1, b - 1, c - 1))
+# 결과 출력
+sys.stdout.write('\n'.join(map(str, output)) + '\n')

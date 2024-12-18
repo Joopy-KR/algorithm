@@ -28,7 +28,6 @@ for i in range(k):
 
 max_case.append(sushis[:k])
 
-
 left_idx = 0
 right_idx = k - 1
 
@@ -50,15 +49,6 @@ while right_idx < len(sushis) - 1:
             max_case.append(sushis[left_idx: right_idx + 1])
         elif cnt == max_cnt:
             max_case.append(sushis[left_idx: right_idx + 1])
-
-    # print(f"cnt: {cnt}")
-    # print(f"max_cnt: {max_cnt}")
-    # print(sushi_counter)
-# print(sushi_counter)
-
-# if not is_coupon:
-#     max_cnt += 1
-# print(max_case)
 
 for lst in max_case:
     if c not in lst:

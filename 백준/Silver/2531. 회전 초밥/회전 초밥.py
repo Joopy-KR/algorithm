@@ -1,58 +1,49 @@
 """
-1. 맨 처음 k개만 개수를 검사한다
-2. 초밥 번호에 따른 해쉬 테이블을 만들어서 숫자로 관리한다.
-3. 왼쪽에 빠져나오는 애 += 1, 오른쪽에 새로 추가되는 애 -= 1
-4. 왼쪽 빠져나오는 애가 0이라면 개수 -= 1, 새로 추가되는 애가 1이라면 개수 += 1
-5. 다 끝나고 쿠폰 번호가 1이상이라면 pass, 0이라면 += 1을 해준다. <- 반례 발견: max_cnt 찍은 시점에서 이미 쿠폰 포함한 상태였다면? : is_coupon으로 해결
+1. 우선 처음 k개의 경우를 생각한 뒤
+2. 왼쪽, 오른쪽 인덱스 잡고 하나씩 옮겨가며 오른쪽꺼 판단하기
+3. 매 이동시마다, 쿠폰이 포함되었는지 확인하기
 
-예외: 새로 추가되는 애가 이미 안에 있는 친구라면?
+예외1. "회전" 초밥이므로 처음 k개 저장해뒀다가 나중에 포함해서 순회돌기
+예외2. 최대일 경우 쿠폰번호 포함되었는지 확인하기
 """
 import sys
 input = sys.stdin.readline
 
 N, d, k, c = map(int, input().rstrip().split())
 sushis = [int(input()) for _ in range(N)]
-additional_sushi = sushis[:k]  # 회전초밥이므로 시작과 끝이 이어져야함
-sushis.extend(additional_sushi)
+sushis.extend(sushis[:k])
 sushi_counter = {i: 0 for i in range(1, d + 1)}
-max_cnt = 0
-max_case = list()
-cnt = 0
+now_cnt = 0
+max_cnt = -1
+is_coupon = False
 
+# 1. 우선 처음 k개의 경우를 생각한 뒤
 for i in range(k):
-    sushi_counter[sushis[i]] += 1
-    if sushi_counter[sushis[i]] == 1:
-        cnt += 1
-        if cnt > max_cnt:
-            max_cnt = cnt
+    sushi = sushis[i]
+    if sushi == c:
+        is_coupon = True
+    sushi_counter[sushi] += 1
+    if sushi_counter[sushi] == 1:
+        now_cnt += 1
+max_cnt = now_cnt
 
-max_case.append(sushis[:k])
-
+# 2. 왼쪽, 오른쪽 인덱스 잡고 하나씩 옮겨가며 오른쪽꺼 판단하기
 left_idx = 0
 right_idx = k - 1
-
 while right_idx < len(sushis) - 1:
-    # 3. 왼쪽에 빠져나오는 애 -= 1, 오른쪽에 새로 추가되는 애 += 1
-    # 4. 왼쪽 빠져나오는 애가 0이라면 개수 -= 1, 새로 추가되는 애가 1이라면 개수 += 1
     sushi_counter[sushis[left_idx]] -= 1
     if sushi_counter[sushis[left_idx]] == 0:
-        cnt -= 1
+        now_cnt -= 1
     left_idx += 1
 
     right_idx += 1
     sushi_counter[sushis[right_idx]] += 1
-    if sushi_counter[sushis[right_idx]] == 1:
-        cnt += 1
-        if cnt > max_cnt:
-            max_cnt = cnt
-            max_case.clear()
-            max_case.append(sushis[left_idx: right_idx + 1])
-        elif cnt == max_cnt:
-            max_case.append(sushis[left_idx: right_idx + 1])
+    if sushi_counter[sushis[right_idx]] == 1:  # 새로온 초밥이라면
+        now_cnt += 1
 
-for lst in max_case:
-    if c not in lst:
-        max_cnt += 1
-        break
+    if sushi_counter[c] > 0:  # 안에 쿠폰이 있으면
+        max_cnt = max(max_cnt, now_cnt)
+    else:
+        max_cnt = max(max_cnt, now_cnt + 1)
 
 print(max_cnt)

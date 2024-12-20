@@ -10,6 +10,8 @@ visited[N] = 1
 
 while queue:
     now = queue.popleft()
+    if now == K:
+        break
     # -1로 이동
     if 0 < now:
         if visited[now - 1] == 0:

@@ -23,10 +23,9 @@ while queue:
         nr = now_r + dr[i]
         nc = now_c + dc[i]
         if 0 <= nr < N and 0 <= nc < M:
-            if arr[nr][nc] != -1:
-                if visited[nr][nc] == -1 or visited[nr][nc] > visited[now_r][now_c] + 1:
-                    queue.append([nr, nc])
-                    visited[nr][nc] = visited[now_r][now_c] + 1
+            if arr[nr][nc] != -1 and visited[nr][nc] == -1:
+                queue.append([nr, nc])
+                visited[nr][nc] = visited[now_r][now_c] + 1
 
 max_time = 0
 is_cant_all = False

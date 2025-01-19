@@ -2,24 +2,22 @@ import sys
 input = sys.stdin.readline
 
 N = int(input().rstrip())
-arr = [list(map(int, input().rstrip().split())) for _ in range(N)]
-before_max = arr[0]
-before_min = arr[0]
-current_max = arr[0]
-current_min = arr[0]
+before_max = list(map(int, input().rstrip().split()))
+before_min = before_max[:]
 
-for i in range(1, N):
+for _ in range(1, N):
+    current = list(map(int, input().rstrip().split()))
     current_max = [
-        max(before_max[0], before_max[1]) + arr[i][0],
-        max(before_max[0], before_max[1], before_max[2]) + arr[i][1],
-        max(before_max[1], before_max[2]) + arr[i][2]
+        max(before_max[0], before_max[1]) + current[0],
+        max(before_max[0], before_max[1], before_max[2]) + current[1],
+        max(before_max[1], before_max[2]) + current[2]
     ]
     current_min = [
-        min(before_min[0] + arr[i][0], before_min[1] + arr[i][0]),
-        min(before_min[0] + arr[i][1], before_min[1] + arr[i][1], before_min[2] + arr[i][1]),
-        min(before_min[1] + arr[i][2], before_min[2] + arr[i][2])
+        min(before_min[0], before_min[1]) + current[0],
+        min(before_min[0], before_min[1], before_min[2]) + current[1],
+        min(before_min[1], before_min[2]) + current[2]
     ]
     before_max = current_max
     before_min = current_min
 
-print(max(current_max), min(current_min))
+print(max(before_max), min(before_min))
